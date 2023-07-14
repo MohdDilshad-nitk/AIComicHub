@@ -6,9 +6,25 @@ This web project is built using the MERN stack (MongoDB, Express.js, React.js, a
 
 The showcase page displays multiple carousels of comics posted by users on the website. The comics are fetched from MongoDB and displayed as images within the carousel. The last slide of the carousel contains information about the creator and the prompt used to make the comic. Users can also search for comics based on the prompt or author using the search field.
 
+<img width="905" alt="Screenshot 2023-07-14 174812" src="https://github.com/MohdDilshad-nitk/AIComicHub/assets/97335106/e9da5803-5b7a-49e6-b871-7a60131b9838">
+
+
+
+<img width="874" alt="Screenshot 2023-07-14 174856" src="https://github.com/MohdDilshad-nitk/AIComicHub/assets/97335106/c4f82277-261f-486b-9a61-86d133b3aa87">
+
+
+<img width="895" alt="Screenshot 2023-07-14 174916" src="https://github.com/MohdDilshad-nitk/AIComicHub/assets/97335106/366c2ee2-8abe-4470-b163-c25b69fefbdd">
+
 ## Create Page
 
 The create page provides a form for users to generate comics. It includes two text fields for entering the name and prompt of the comic. Upon clicking the "Generate" button, the prompt is sent to the Flask backend. The backend then sends the text to the OpenAI API, which converts it into a conversation. The conversation data is then sent to the Stable Diffusion API, which generates the comic images. The generated images are sent back to the frontend and displayed to the user. Users have the option to share the generated images with the community.
+
+<img width="903" alt="Screenshot 2023-07-14 174940" src="https://github.com/MohdDilshad-nitk/AIComicHub/assets/97335106/ca50df74-c9d9-4256-899e-1c5c51da47e5">
+
+
+<img width="882" alt="Screenshot 2023-07-14 175338" src="https://github.com/MohdDilshad-nitk/AIComicHub/assets/97335106/5444261d-7da0-410d-aec9-53fa834842b6">
+
+
 
 ## Image Upload and Storage
 
