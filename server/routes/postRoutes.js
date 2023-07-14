@@ -14,6 +14,25 @@ cloudinary.config({
 
 });
 
+async function uploadPhotosToCloudinary(photos) {
+    try {
+      const uploadedPhotos = [];
+  
+      for (let i = 0; i < photos.length; i++) {
+        const photo = photos[i];
+  
+        const result = await cloudinary.uploader.upload(photo);
+        uploadedPhotos.push(result.url);
+      }
+  
+      return uploadedPhotos;
+    } catch (error) {
+      console.error('Error uploading photos to Cloudinary:', error);
+      throw error;
+    }
+  }
+  
+
 router.route('/').get(async (req, res) => {
     try {
         const posts = await Post.find({});
@@ -25,13 +44,16 @@ router.route('/').get(async (req, res) => {
 router.route('/').post(async (req, res) => {
 
     try {
-        const { name, prompt, photo } = req.body;
-        const photoUrl = await cloudinary.uploader.upload(photo);
+        const { name, prompt, photos } = req.body;
+        const uploadedPhotoUrls = await uploadPhotosToCloudinary(photos);
+        
+        console.log(uploadedPhotoUrls);
+        
 
         const newPost = await Post.create({
             name,
             prompt,
-            photo: photoUrl.url
+            photos: uploadedPhotoUrls
         });
 
         res.status(201).json({ sucess: true, data: newPost });
