@@ -5,13 +5,31 @@ import { preview } from '../assets';
 import { getRandomPrompt } from '../utils';
 import { FormField, Loader } from '../components';
 
+const RenderCards = ({data,title})=>{
+  if(data?.length > 0){
+      return data.map((item)=>{            
+                      return (
+                      <div className=" relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center mr-10 ">
+                      <img               
+                      src={item}
+                      alt="AI image"
+                      className="w-full h-full object-contain"
+                    /></div>);
+                      });             
+  }else{
+      return(
+          <h2 className='mt-5 font-bold text-xl uppercase text-[#6449ff]'>{title}</h2>
+      )
+  }
+}
+
 const CreatePost = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: '',
     prompt: '',
-    photo: '',
+    photos: [],
   });
 
   const [generatingImg, setGeneratingImg] = useState(false);
@@ -28,18 +46,25 @@ const CreatePost = () => {
     if (form.prompt) {
       try {
         setGeneratingImg(true);
-        const response = await fetch('http://localhost:8080/api/v1/dalle', {
+        const response = await fetch('http://127.0.0.1:5000', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            prompt: form.prompt,
+            userInput: form.prompt,
           }),
         });
 
         const data = await response.json();
-        setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
+        var photos = Object.values(data);
+        for(var i=0;i<photos.length;i++){
+          photos[i] = `data:image/png;base64,${photos[i]}`
+        }
+
+        setForm({ ...form, photos: photos });
+        
+        // setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
       } catch (err) {
         alert(err);
       } finally {
@@ -53,7 +78,7 @@ const CreatePost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.prompt && form.photo) {
+    if (form.prompt && form.photos.length != 0) {
       setLoading(true);
       try {
         const response = await fetch('http://localhost:8080/api/v1/post', {
@@ -81,7 +106,7 @@ const CreatePost = () => {
     <section className="max-w-7xl mx-auto">
       <div>
         <h1 className="font-extrabold text-[#222328] text-[32px]">Create</h1>
-        <p className="mt-2 text-[#666e75] text-[14px] max-w-[500px]">Generate an imaginative image through DALL-E AI and share it with the community</p>
+        <p className="mt-2 text-[#666e75] text-[14px] max-w-[500px]">Generate an imaginative comic through Stability AI and share it with the community</p>
       </div>
 
       <form className="mt-16 max-w-3xl" onSubmit={handleSubmit}>
@@ -106,27 +131,28 @@ const CreatePost = () => {
             handleSurpriseMe={handleSurpriseMe}
           />
 
-          <div className="relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center">
-            { form.photo ? (
-              <img
-                src={form.photo}
-                alt={form.prompt}
-                className="w-full h-full object-contain"
-              />
-            ) : (
+{ form.photos.length != 0 ? 
+
+  <div className='grid lg:grid-cols-3 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3'>
+  <RenderCards data={form.photos} title="Something went wrong"/>
+  </div>
+  :
+
+
+          <div className=" relative bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-64 p-3 h-64 flex justify-center items-center">     
               <img
                 src={preview}
                 alt="preview"
                 className="w-9/12 h-9/12 object-contain opacity-40"
               />
-            )}
+            
 
             {generatingImg && (
               <div className="absolute inset-0 z-0 flex justify-center items-center bg-[rgba(0,0,0,0.5)] rounded-lg">
                 <Loader />
               </div>
             )}
-          </div>
+          </div>}
         </div>
 
         <div className="mt-5 flex gap-5">
@@ -140,7 +166,7 @@ const CreatePost = () => {
         </div>
 
         <div className="mt-10">
-          <p className="mt-2 text-[#666e75] text-[14px]">Once you have created the image you want, you can share it with others in the community </p>
+          <p className="mt-2 text-[#666e75] text-[14px]">Once you have created the comic you want, you can share it with others in the community </p>
           <button
             type="submit"
             className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
